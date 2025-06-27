@@ -1,0 +1,6 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Do not interact in powershell. Always switch to wsl by entering 'wsl' in poweshell. Then proceed as usual.
