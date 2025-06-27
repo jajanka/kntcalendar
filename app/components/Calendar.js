@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-export default function Calendar({ currentMonth, setCurrentMonth, entries, onDateClick }) {
+export default function Calendar({ currentMonth, setCurrentMonth, entries, onDateClick, onDelete }) {
   const daysInWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   const getDaysInMonth = (date) => {
@@ -35,11 +35,11 @@ export default function Calendar({ currentMonth, setCurrentMonth, entries, onDat
   };
 
   const getStatusColor = (entry) => {
-    if (!entry) return 'bg-gray-100 dark:bg-gray-700';
-    if (entry.success && entry.happy) return 'bg-green-500';
-    if (entry.success && !entry.happy) return 'bg-yellow-500';
-    if (!entry.success && entry.happy) return 'bg-blue-500';
-    return 'bg-red-500';
+    if (!entry) return 'bg-muted hover:bg-muted/80';
+    if (entry.success && entry.happy) return 'bg-gradient-to-br from-emerald-400 to-emerald-600 text-white';
+    if (entry.success && !entry.happy) return 'bg-gradient-to-br from-amber-400 to-amber-600 text-white';
+    if (!entry.success && entry.happy) return 'bg-gradient-to-br from-blue-400 to-blue-600 text-white';
+    return 'bg-gradient-to-br from-red-400 to-red-600 text-white';
   };
 
   const getStatusEmoji = (entry) => {
@@ -62,33 +62,46 @@ export default function Calendar({ currentMonth, setCurrentMonth, entries, onDat
     setCurrentMonth(new Date());
   };
 
+  const handleDelete = (e, date) => {
+    e.stopPropagation();
+    if (onDelete) {
+      onDelete(date);
+    }
+  };
+
   const days = getDaysInMonth(currentMonth);
   const monthName = currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Calendar Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
         <div className="flex items-center space-x-4">
           <button
             onClick={goToPreviousMonth}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+            className="btn btn-ghost p-2 hover:bg-accent"
+            aria-label="Previous month"
           >
-            ←
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
           </button>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <h2 className="text-2xl font-bold text-foreground">
             {monthName}
           </h2>
           <button
             onClick={goToNextMonth}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+            className="btn btn-ghost p-2 hover:bg-accent"
+            aria-label="Next month"
           >
-            →
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
           </button>
         </div>
         <button
           onClick={goToToday}
-          className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium"
+          className="btn btn-outline text-sm font-medium"
         >
           Today
         </button>
@@ -97,20 +110,20 @@ export default function Calendar({ currentMonth, setCurrentMonth, entries, onDat
       {/* Legend */}
       <div className="flex flex-wrap gap-4 text-sm">
         <div className="flex items-center space-x-2">
-          <div className="w-4 h-4 bg-green-500 rounded"></div>
-          <span>Win + Happy</span>
+          <div className="w-4 h-4 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded"></div>
+          <span className="text-muted-foreground">Win + Happy</span>
         </div>
         <div className="flex items-center space-x-2">
-          <div className="w-4 h-4 bg-yellow-500 rounded"></div>
-          <span>Win + Meh</span>
+          <div className="w-4 h-4 bg-gradient-to-br from-amber-400 to-amber-600 rounded"></div>
+          <span className="text-muted-foreground">Win + Meh</span>
         </div>
         <div className="flex items-center space-x-2">
-          <div className="w-4 h-4 bg-blue-500 rounded"></div>
-          <span>Loss + Happy</span>
+          <div className="w-4 h-4 bg-gradient-to-br from-blue-400 to-blue-600 rounded"></div>
+          <span className="text-muted-foreground">Loss + Happy</span>
         </div>
         <div className="flex items-center space-x-2">
-          <div className="w-4 h-4 bg-red-500 rounded"></div>
-          <span>Loss + Sad</span>
+          <div className="w-4 h-4 bg-gradient-to-br from-red-400 to-red-600 rounded"></div>
+          <span className="text-muted-foreground">Loss + Sad</span>
         </div>
       </div>
 
@@ -118,7 +131,7 @@ export default function Calendar({ currentMonth, setCurrentMonth, entries, onDat
       <div className="grid grid-cols-7 gap-1">
         {/* Day headers */}
         {daysInWeek.map(day => (
-          <div key={day} className="p-2 text-center text-sm font-medium text-gray-500 dark:text-gray-400">
+          <div key={day} className="p-3 text-center text-sm font-medium text-muted-foreground">
             {day}
           </div>
         ))}
@@ -132,26 +145,33 @@ export default function Calendar({ currentMonth, setCurrentMonth, entries, onDat
             <div
               key={index}
               className={`
-                aspect-square p-2 border border-gray-200 dark:border-gray-600
-                ${day ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700' : ''}
-                ${isToday ? 'ring-2 ring-red-500' : ''}
-                transition-all duration-200
+                aspect-square p-2 border border-border rounded-lg relative group
+                ${day ? 'cursor-pointer hover:bg-accent/50 transition-all duration-200' : ''}
+                ${isToday ? 'ring-2 ring-primary ring-offset-2' : ''}
               `}
               onClick={() => day && onDateClick(day)}
             >
               {day && (
                 <div className="h-full flex flex-col">
-                  <div className="text-sm font-medium text-gray-900 dark:text-white">
+                  <div className="text-sm font-medium text-foreground mb-1">
                     {day.getDate()}
                   </div>
                   {entry && (
-                    <div className="flex-1 flex items-center justify-center">
+                    <div className="flex-1 flex items-center justify-center relative">
                       <div className={`
-                        w-full h-full rounded-lg flex items-center justify-center text-2xl
+                        w-full h-full rounded-lg flex items-center justify-center text-2xl shadow-sm
                         ${getStatusColor(entry)}
                       `}>
                         {getStatusEmoji(entry)}
                       </div>
+                      {/* Delete button - only show on hover */}
+                      <button
+                        onClick={(e) => handleDelete(e, day)}
+                        className="absolute top-1 right-1 w-5 h-5 bg-destructive text-destructive-foreground rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center text-xs hover:bg-destructive/80"
+                        title="Delete entry"
+                      >
+                        ×
+                      </button>
                     </div>
                   )}
                 </div>

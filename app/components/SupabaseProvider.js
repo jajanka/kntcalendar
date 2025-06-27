@@ -219,6 +219,40 @@ export function SupabaseProvider({ children }) {
     }
   };
 
+  const deleteEntry = async (date) => {
+    if (!user) {
+      console.error('No user found for deleteEntry');
+      throw new Error('User not authenticated');
+    }
+    
+    try {
+      console.log('Deleting entry for user:', user.id, 'date:', date);
+      
+      const { error } = await supabaseClient
+        .from('entries')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('date', date);
+
+      if (error) {
+        console.error('Error deleting entry:', error);
+        console.error('Error details:', {
+          code: error.code,
+          message: error.message,
+          details: error.details,
+          hint: error.hint
+        });
+        throw error;
+      }
+
+      console.log('Entry deleted successfully');
+      return true;
+    } catch (error) {
+      console.error('Error in deleteEntry:', error);
+      throw error;
+    }
+  };
+
   const value = {
     user,
     loading,
@@ -226,6 +260,7 @@ export function SupabaseProvider({ children }) {
     signOut,
     getUserEntries,
     saveEntry,
+    deleteEntry,
   };
 
   return (

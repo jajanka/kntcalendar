@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-export default function DayModal({ date, entry, onSave, onClose }) {
+export default function DayModal({ date, entry, onSave, onDelete, onClose }) {
   const [success, setSuccess] = useState(entry?.success ?? null);
   const [happy, setHappy] = useState(entry?.happy ?? null);
   const [notes, setNotes] = useState(entry?.notes ?? '');
@@ -26,6 +26,12 @@ export default function DayModal({ date, entry, onSave, onClose }) {
         happy,
         notes: notes.trim()
       });
+    }
+  };
+
+  const handleDelete = () => {
+    if (entry) {
+      onDelete(date);
     }
   };
 
@@ -53,98 +59,101 @@ export default function DayModal({ date, entry, onSave, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in">
+      <div className="card shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto animate-in">
         {/* Header */}
-        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+        <div className="card-header">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            <h2 className="card-title">
               {formatDate(date)}
             </h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              className="btn btn-ghost p-2 hover:bg-accent"
+              aria-label="Close modal"
             >
-              ✕
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
             </button>
           </div>
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-6">
+        <div className="card-content space-y-6">
           {/* Success/Failure Section */}
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-foreground">
               How'd it go today?
             </h3>
             <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={() => setSuccess(true)}
                 className={`
-                  p-4 rounded-lg border-2 transition-all duration-200 text-left
+                  p-4 rounded-lg border-2 transition-all duration-200 text-left group
                   ${success === true 
-                    ? 'border-green-500 bg-green-50 dark:bg-green-900/20' 
-                    : 'border-gray-200 dark:border-gray-600 hover:border-green-300'
+                    ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20' 
+                    : 'border-border hover:border-emerald-300 hover:bg-accent/50'
                   }
                 `}
               >
                 <div className="text-2xl mb-2">😎</div>
-                <div className="font-medium text-gray-900 dark:text-white">Success</div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">You nailed it</div>
+                <div className="font-medium text-foreground">Success</div>
+                <div className="text-sm text-muted-foreground">You nailed it</div>
               </button>
               
               <button
                 onClick={() => setSuccess(false)}
                 className={`
-                  p-4 rounded-lg border-2 transition-all duration-200 text-left
+                  p-4 rounded-lg border-2 transition-all duration-200 text-left group
                   ${success === false 
                     ? 'border-red-500 bg-red-50 dark:bg-red-900/20' 
-                    : 'border-gray-200 dark:border-gray-600 hover:border-red-300'
+                    : 'border-border hover:border-red-300 hover:bg-accent/50'
                   }
                 `}
               >
                 <div className="text-2xl mb-2">💀</div>
-                <div className="font-medium text-gray-900 dark:text-white">Failure</div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">It was rough</div>
+                <div className="font-medium text-foreground">Failure</div>
+                <div className="text-sm text-muted-foreground">It was rough</div>
               </button>
             </div>
           </div>
 
           {/* Happiness Section */}
           {success !== null && (
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-foreground">
                 How do you feel about it?
               </h3>
               <div className="grid grid-cols-2 gap-3">
                 <button
                   onClick={() => setHappy(true)}
                   className={`
-                    p-4 rounded-lg border-2 transition-all duration-200 text-left
+                    p-4 rounded-lg border-2 transition-all duration-200 text-left group
                     ${happy === true 
                       ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' 
-                      : 'border-gray-200 dark:border-gray-600 hover:border-blue-300'
+                      : 'border-border hover:border-blue-300 hover:bg-accent/50'
                     }
                   `}
                 >
                   <div className="text-2xl mb-2">😊</div>
-                  <div className="font-medium text-gray-900 dark:text-white">Happy</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Feeling good</div>
+                  <div className="font-medium text-foreground">Happy</div>
+                  <div className="text-sm text-muted-foreground">Feeling good</div>
                 </button>
                 
                 <button
                   onClick={() => setHappy(false)}
                   className={`
-                    p-4 rounded-lg border-2 transition-all duration-200 text-left
+                    p-4 rounded-lg border-2 transition-all duration-200 text-left group
                     ${happy === false 
-                      ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20' 
-                      : 'border-gray-200 dark:border-gray-600 hover:border-yellow-300'
+                      ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/20' 
+                      : 'border-border hover:border-amber-300 hover:bg-accent/50'
                     }
                   `}
                 >
                   <div className="text-2xl mb-2">😐</div>
-                  <div className="font-medium text-gray-900 dark:text-white">Meh</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Could be better</div>
+                  <div className="font-medium text-foreground">Meh</div>
+                  <div className="text-sm text-muted-foreground">Could be better</div>
                 </button>
               </div>
             </div>
@@ -152,54 +161,60 @@ export default function DayModal({ date, entry, onSave, onClose }) {
 
           {/* Summary */}
           {success !== null && happy !== null && (
-            <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-              <p className="text-gray-900 dark:text-white font-medium">
+            <div className="p-4 bg-muted rounded-lg">
+              <p className="text-foreground font-medium">
                 {getSuccessText(success)}
               </p>
-              <p className="text-gray-600 dark:text-gray-300">
+              <p className="text-muted-foreground">
                 {getHappyText(happy)}
               </p>
             </div>
           )}
 
           {/* Notes Section */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-foreground">
               Notes (optional)
             </label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="What happened? Why did it go this way? Get it off your chest..."
-              className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg 
-                         bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-red-500 focus:border-transparent
-                         resize-none"
+              className="input min-h-[100px] resize-none"
               rows={4}
             />
           </div>
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-gray-200 dark:border-gray-700 flex justify-between">
-          <button
-            onClick={handleClear}
-            className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
-          >
-            Clear
-          </button>
+        <div className="card-footer justify-between">
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={handleClear}
+              className="btn btn-ghost text-muted-foreground hover:text-foreground"
+            >
+              Clear
+            </button>
+            {entry && (
+              <button
+                onClick={handleDelete}
+                className="btn btn-ghost text-destructive hover:text-destructive/80"
+              >
+                Delete
+              </button>
+            )}
+          </div>
           <div className="space-x-3">
             <button
               onClick={onClose}
-              className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+              className="btn btn-outline"
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
               disabled={success === null || happy === null}
-              className="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 
-                         disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Save
             </button>
