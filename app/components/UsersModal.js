@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useAccount } from 'wagmi';
+import UnlockButton from './UnlockButton';
 
 export default function UsersModal({ isOpen, date, onClose, onUserClick }) {
   const [entries, setEntries] = useState([]);
@@ -8,6 +10,7 @@ export default function UsersModal({ isOpen, date, onClose, onUserClick }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedEntry, setSelectedEntry] = useState(null);
   const [viewMode, setViewMode] = useState('list'); // 'list' or 'detail'
+  const { address: currentUserAddress } = useAccount();
 
   useEffect(() => {
     if (isOpen && date) {
@@ -196,8 +199,7 @@ export default function UsersModal({ isOpen, date, onClose, onUserClick }) {
                   {filteredEntries.map((entry) => (
                     <div
                       key={entry.id}
-                      onClick={() => handleUserClick(entry)}
-                      className="card p-4 cursor-pointer hover:bg-accent/50 transition-colors duration-200"
+                      className="card p-4 hover:bg-accent/50 transition-colors duration-200"
                     >
                       <div className="flex items-center space-x-4">
                         {/* User Avatar */}
@@ -237,16 +239,34 @@ export default function UsersModal({ isOpen, date, onClose, onUserClick }) {
                             </p>
                           </div>
                         </div>
+
+                        {/* Unlock Button */}
+                        <div className="flex-shrink-0">
+                          <UnlockButton 
+                            entry={entry} 
+                            currentUserAddress={currentUserAddress}
+                          />
+                        </div>
                       </div>
 
-                      {/* Notes Preview */}
-                      {entry.notes && (
+                      {/* Notes Preview - only show if unlocked or own entry */}
+                      {entry.notes && (currentUserAddress === entry.users?.id) && (
                         <div className="mt-3 pt-3 border-t border-border">
                           <p className="text-sm text-muted-foreground line-clamp-2">
                             {entry.notes}
                           </p>
                         </div>
                       )}
+
+                      {/* Click to view details */}
+                      <button
+                        onClick={() => handleUserClick(entry)}
+                        className="w-full mt-3 pt-3 border-t border-border text-left"
+                      >
+                        <p className="text-xs text-primary hover:text-primary/80 font-medium">
+                          Click to view details →
+                        </p>
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -283,8 +303,8 @@ export default function UsersModal({ isOpen, date, onClose, onUserClick }) {
                 </div>
               </div>
 
-              {/* Notes */}
-              {selectedEntry.notes && (
+              {/* Notes - only show if unlocked or own entry */}
+              {selectedEntry.notes && (currentUserAddress === selectedEntry.users?.id) && (
                 <div>
                   <h3 className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wide">
                     Notes
@@ -317,6 +337,16 @@ export default function UsersModal({ isOpen, date, onClose, onUserClick }) {
                   </div>
                 </div>
               </div>
+
+              {/* Unlock Button for detail view */}
+              {currentUserAddress !== selectedEntry.users?.id && (
+                <div className="flex justify-center">
+                  <UnlockButton 
+                    entry={selectedEntry} 
+                    currentUserAddress={currentUserAddress}
+                  />
+                </div>
+              )}
             </div>
           )}
         </div>

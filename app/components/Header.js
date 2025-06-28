@@ -2,6 +2,7 @@
 
 import { useSupabase } from './SupabaseProvider';
 import { useState } from 'react';
+import WalletConnect from './WalletConnect';
 
 export default function Header() {
   const { user, loading, signIn, signOut } = useSupabase();
@@ -64,6 +65,9 @@ export default function Header() {
               </div>
             ) : user ? (
               <div className="flex items-center space-x-3">
+                {/* Wallet Connect */}
+                <WalletConnect />
+                
                 <div className="text-right">
                   <p className="text-sm font-medium text-foreground">{user.user_metadata?.name || user.email}</p>
                   <p className="text-xs text-muted-foreground">{user.email}</p>
