@@ -6,7 +6,7 @@ import { cookies } from 'next/headers';
 export async function GET() {
   try {
     const supabase = createRouteHandlerClient({ cookies });
-    
+
     // Get the current user
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     
