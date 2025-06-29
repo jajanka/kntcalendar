@@ -5,9 +5,9 @@ module.exports = {
   solidity: "0.8.19",
   networks: {
     monadTestnet: {
-      url: "https://rpc.testnet.monad.xyz",
+      url: "https://testnet-rpc.monad.xyz",
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
-      chainId: 1337, // Monad testnet chain ID
+      chainId: 10143, // Monad testnet chain ID
     },
     hardhat: {
       chainId: 1337,

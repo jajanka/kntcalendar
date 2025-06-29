@@ -18,7 +18,7 @@ export const useWeb3 = () => {
 
 // Define Monad chain configuration
 const monadChain = {
-  id: 1337, // Replace with actual Monad chain ID
+  id: 10143, // Replace with actual Monad chain ID
   name: 'Monad',
   nativeCurrency: {
     decimals: 18,
@@ -27,16 +27,16 @@ const monadChain = {
   },
   rpcUrls: {
     default: {
-      http: ['https://rpc.testnet.monad.xyz'],
+      http: ['https://testnet-rpc.monad.xyz'],
     },
     public: {
-      http: ['https://rpc.testnet.monad.xyz'],
+      http: ['https://testnet-rpc.monad.xyz'],
     },
   },
   blockExplorers: {
     default: {
       name: 'Monad Explorer',
-      url: 'https://explorer.testnet.monad.xyz',
+      url: 'https://testnet.monadexplorer.com',
     },
   },
 };

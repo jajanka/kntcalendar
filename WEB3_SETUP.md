@@ -59,9 +59,9 @@ module.exports = {
   solidity: "0.8.19",
   networks: {
     monadTestnet: {
-      url: "https://rpc.testnet.monad.xyz",
+      url: "https://testnet-rpc.monad.xyz",
       accounts: [process.env.PRIVATE_KEY],
-      chainId: 1337, // Replace with actual Monad testnet chain ID
+      chainId: 10143, // Replace with actual Monad testnet chain ID
     },
   },
 };
