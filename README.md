@@ -49,22 +49,35 @@ A bold, honest daily reflection app where users can track their wins, losses, an
    - Go to [supabase.com](https://supabase.com) and create a free account
    - Create a new project
    - Go to Settings → API to get your project URL and anon key
-   
-   **Option B: Use Supabase Local Development**
-   - Install Supabase CLI: `npm install -g supabase`
-   - Initialize Supabase: `supabase init`
-   - Start local Supabase: `supabase start`
 
 4. **Set up environment variables**
    Create a `.env.local` file in the root directory:
    ```env
-   # Supabase Configuration
-   NEXT_PUBLIC_SUPABASE_URL="your-supabase-project-url"
-   NEXT_PUBLIC_SUPABASE_ANON_KEY="your-supabase-anon-key"
+   # Database (choose one option below)
+   DATABASE_URL=
    
-   # For local development (if using supabase start)
-   # NEXT_PUBLIC_SUPABASE_URL="http://127.0.0.1:54321"
-   # NEXT_PUBLIC_SUPABASE_ANON_KEY="your-local-anon-key"
+   # Supabase Configuration
+   NEXT_PUBLIC_SUPABASE_URL="url"
+   NEXT_PUBLIC_SUPABASE_ANON_KEY="your-local-anon-key"
+   
+   # OAuth Providers (optional for now)
+   GOOGLE_CLIENT_ID=
+   GOOGLE_CLIENT_SECRET=
+   GITHUB_ID=
+   GITHUB_SECRET=
+   
+   # Web3 Configuration
+   # Get your Reown (WalletConnect) Project ID from https://cloud.walletconnect.com/
+   NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=
+   
+   # Deployed contract address (will be updated after deployment)
+   NEXT_PUBLIC_CONTRACT_ADDRESS=0x0000000000000000000000000000000000000000
+   
+   # Optional: Enable debug mode for development
+   NEXT_PUBLIC_DEBUG=true
+   
+   # Monad Testnet Private Key
+   PRIVATE_KEY=
    ```
 
 5. **Set up the database schema**
@@ -74,10 +87,6 @@ A bold, honest daily reflection app where users can track their wins, losses, an
    - Navigate to SQL Editor
    - Run the SQL from `supabase/migrations/20240101000000_initial_schema.sql`
    
-   **For Local Development:**
-   ```bash
-   supabase db reset
-   ```
 
 6. **Configure OAuth providers (optional)**
    
@@ -124,7 +133,7 @@ A bold, honest daily reflection app where users can track their wins, losses, an
 - **CORS Protection**: API security
 - **Rate Limiting**: Built-in protection
 
-## Local Development with Supabase
+## Local Development with Supabase (not using it currently)
 
 If you want to develop locally with Supabase:
 
@@ -166,6 +175,10 @@ If you want to develop locally with Supabase:
    - Add environment variables in Vercel dashboard:
      - `NEXT_PUBLIC_SUPABASE_URL`
      - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+     - `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID`
+     - `NEXT_PUBLIC_CONTRACT_ADDRESS`
+     - `NEXT_PUBLIC_DEBUG` (set to `false` for production)
+     - `PRIVATE_KEY` (for contract deployment)
    - Deploy!
 
 3. **Update OAuth redirect URIs**
@@ -177,6 +190,10 @@ If you want to develop locally with Supabase:
 Make sure to set these in your production environment:
 - `NEXT_PUBLIC_SUPABASE_URL` - Your Supabase project URL
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Your Supabase anon key
+- `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` - Your WalletConnect project ID
+- `NEXT_PUBLIC_CONTRACT_ADDRESS` - Your deployed contract address
+- `NEXT_PUBLIC_DEBUG` - Set to `false` for production
+- `PRIVATE_KEY` - Your Monad testnet private key (for contract deployment)
 
 ## Database Schema
 
